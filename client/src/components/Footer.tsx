@@ -40,15 +40,15 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative bg-slate-950 border-t border-white/5 pt-12 pb-8 overflow-hidden">
+    <footer className="relative bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-white/5 pt-12 pb-8 overflow-hidden transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-200 dark:border-white/5">
           {/* Brand info */}
           <div className="text-center md:text-left">
-            <h4 className="text-lg font-bold text-slate-100 font-sans">
-              Saksham <span className="text-cyan-400">Raj</span>
+            <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 font-sans">
+              Saksham <span className="text-cyan-600 dark:text-cyan-400">Raj</span>
             </h4>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
               Data Analyst & Business Intelligence | Turning raw data into decisions.
             </p>
           </div>
@@ -64,7 +64,7 @@ export const Footer: React.FC = () => {
                   target={item.href.startsWith('http') ? '_blank' : undefined}
                   rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   aria-label={item.label}
-                  className="p-2.5 rounded-xl bg-slate-900 border border-white/5 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 hover:scale-105 transition-all"
+                  className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 hover:scale-105 shadow-sm dark:shadow-none transition-all"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -76,7 +76,7 @@ export const Footer: React.FC = () => {
           <button
             onClick={scrollToTop}
             aria-label="Scroll back to top"
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-mono text-slate-300 bg-slate-900 border border-white/5 hover:border-cyan-500/30 hover:text-cyan-400 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-mono text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 hover:border-cyan-500/30 hover:text-cyan-600 dark:hover:text-cyan-400 shadow-sm dark:shadow-none transition-colors cursor-pointer"
           >
             <span>Back to top</span>
             <ArrowUp className="h-3.5 w-3.5" />
@@ -84,12 +84,12 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom row */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
           <p>© {new Date().getFullYear()} Saksham Raj. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <a
               href="/privacy"
-              className="inline-flex items-center gap-1 text-slate-400 hover:text-cyan-400 transition-colors"
+              className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
             >
               <Shield className="h-3.5 w-3.5" />
               <span>Privacy Policy</span>

@@ -124,47 +124,47 @@ export const ContactForm: React.FC = () => {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       {/* Left Info Column */}
       <div className="lg:col-span-5 space-y-6">
-        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-white/5 space-y-6">
-          <h3 className="text-2xl font-bold text-slate-100">
-            Let's discuss <span className="text-cyan-400">data solutions</span>
+        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-white/5 space-y-6">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Let's discuss <span className="text-cyan-600 dark:text-cyan-400">data solutions</span>
           </h3>
-          <p className="text-sm text-slate-300 leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             Whether you have an opening for a Data Analyst or Business Intelligence role, need a custom Power BI dashboard, or want to collaborate on predictive analytics, feel free to send a message.
           </p>
 
-          <div className="space-y-4 pt-4 border-t border-white/5">
+          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/5">
             <a
               href={`mailto:${contactEmail}`}
-              className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-white/5 hover:border-cyan-500/30 text-slate-200 hover:text-cyan-400 transition-colors group"
+              className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 hover:border-cyan-500/40 text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors group shadow-sm dark:shadow-none"
             >
-              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform">
                 <Mail className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-xs text-slate-400 font-mono">Email Directly</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">Email Directly</div>
                 <div className="text-sm font-semibold">{contactEmail}</div>
               </div>
             </a>
 
             <a
               href={`tel:${contactPhone.replace(/\s+/g, '')}`}
-              className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-white/5 hover:border-cyan-500/30 text-slate-200 hover:text-cyan-400 transition-colors group"
+              className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 hover:border-cyan-500/40 text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors group shadow-sm dark:shadow-none"
             >
-              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform">
                 <Phone className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-xs text-slate-400 font-mono">Phone / WhatsApp</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">Phone / WhatsApp</div>
                 <div className="text-sm font-semibold">{contactPhone}</div>
               </div>
             </a>
 
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-white/5 text-slate-200">
-              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 text-slate-800 dark:text-slate-200 shadow-sm dark:shadow-none">
+              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-xs text-slate-400 font-mono">Location & Availability</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">Location & Availability</div>
                 <div className="text-sm font-semibold">Delhi NCR, India (Remote & On-site)</div>
               </div>
             </div>
@@ -176,7 +176,7 @@ export const ContactForm: React.FC = () => {
       <div className="lg:col-span-7">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="glass-panel p-6 sm:p-8 rounded-2xl border border-white/5 space-y-5"
+          className="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-white/5 space-y-5 shadow-sm dark:shadow-none"
           noValidate
         >
           {/* Honeypot field (hidden from legitimate users, filled by naive bots) */}
@@ -194,90 +194,90 @@ export const ContactForm: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-xs font-mono font-medium text-slate-300 mb-2">
-                Your Name <span className="text-cyan-400">*</span>
+              <label htmlFor="name" className="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Your Name <span className="text-cyan-500 dark:text-cyan-400">*</span>
               </label>
               <input
                 id="name"
                 type="text"
                 maxLength={100}
                 placeholder="Jane Doe"
-                className={`w-full rounded-xl bg-slate-950/80 border px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 transition-all ${
+                className={`w-full rounded-xl bg-white dark:bg-slate-950/80 border px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 transition-all ${
                   errors.name
                     ? 'border-rose-500 focus:ring-rose-500'
-                    : 'border-white/10 focus:border-cyan-400 focus:ring-cyan-400'
+                    : 'border-slate-300 dark:border-white/10 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-cyan-500'
                 }`}
                 {...register('name')}
               />
               {errors.name && (
-                <p className="mt-1 text-xs text-rose-400">{errors.name.message}</p>
+                <p className="mt-1 text-xs text-rose-500">{errors.name.message}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-xs font-mono font-medium text-slate-300 mb-2">
-                Email Address <span className="text-cyan-400">*</span>
+              <label htmlFor="email" className="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Email Address <span className="text-cyan-500 dark:text-cyan-400">*</span>
               </label>
               <input
                 id="email"
                 type="email"
                 maxLength={255}
                 placeholder="jane@company.com"
-                className={`w-full rounded-xl bg-slate-950/80 border px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 transition-all ${
+                className={`w-full rounded-xl bg-white dark:bg-slate-950/80 border px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 transition-all ${
                   errors.email
                     ? 'border-rose-500 focus:ring-rose-500'
-                    : 'border-white/10 focus:border-cyan-400 focus:ring-cyan-400'
+                    : 'border-slate-300 dark:border-white/10 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-cyan-500'
                 }`}
                 {...register('email')}
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-rose-400">{errors.email.message}</p>
+                <p className="mt-1 text-xs text-rose-500">{errors.email.message}</p>
               )}
             </div>
           </div>
 
           {/* Subject */}
           <div>
-            <label htmlFor="subject" className="block text-xs font-mono font-medium text-slate-300 mb-2">
-              Subject <span className="text-cyan-400">*</span>
+            <label htmlFor="subject" className="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Subject <span className="text-cyan-500 dark:text-cyan-400">*</span>
             </label>
             <input
               id="subject"
               type="text"
               maxLength={150}
               placeholder="Data Analyst Opportunity / Dashboard Inquiry"
-              className={`w-full rounded-xl bg-slate-950/80 border px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 transition-all ${
+              className={`w-full rounded-xl bg-white dark:bg-slate-950/80 border px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 transition-all ${
                 errors.subject
                   ? 'border-rose-500 focus:ring-rose-500'
-                  : 'border-white/10 focus:border-cyan-400 focus:ring-cyan-400'
+                  : 'border-slate-300 dark:border-white/10 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-cyan-500'
               }`}
               {...register('subject')}
             />
             {errors.subject && (
-              <p className="mt-1 text-xs text-rose-400">{errors.subject.message}</p>
+              <p className="mt-1 text-xs text-rose-500">{errors.subject.message}</p>
             )}
           </div>
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="block text-xs font-mono font-medium text-slate-300 mb-2">
-              Message <span className="text-cyan-400">*</span>
+            <label htmlFor="message" className="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Message <span className="text-cyan-500 dark:text-cyan-400">*</span>
             </label>
             <textarea
               id="message"
               rows={4}
               maxLength={3000}
               placeholder="Tell me about your project, team, or opportunity..."
-              className={`w-full rounded-xl bg-slate-950/80 border px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 transition-all resize-y ${
+              className={`w-full rounded-xl bg-white dark:bg-slate-950/80 border px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 transition-all resize-y ${
                 errors.message
                   ? 'border-rose-500 focus:ring-rose-500'
-                  : 'border-white/10 focus:border-cyan-400 focus:ring-cyan-400'
+                  : 'border-slate-300 dark:border-white/10 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-cyan-500'
               }`}
               {...register('message')}
             />
             {errors.message && (
-              <p className="mt-1 text-xs text-rose-400">{errors.message.message}</p>
+              <p className="mt-1 text-xs text-rose-500">{errors.message.message}</p>
             )}
           </div>
 
@@ -286,12 +286,12 @@ export const ContactForm: React.FC = () => {
             <input
               id="consent"
               type="checkbox"
-              className="mt-1 h-4 w-4 rounded border-white/20 bg-slate-900 text-cyan-400 focus:ring-cyan-400 focus:ring-offset-slate-950 cursor-pointer"
+              className="mt-1 h-4 w-4 rounded border-slate-300 dark:border-white/20 bg-white dark:bg-slate-900 text-cyan-500 focus:ring-cyan-500 cursor-pointer"
               {...register('consent')}
             />
-            <label htmlFor="consent" className="text-xs text-slate-400 leading-relaxed cursor-pointer">
+            <label htmlFor="consent" className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed cursor-pointer">
               I consent to having this form collect my name, email, and message so Saksham Raj can reply to my inquiry. Stored securely for 90 days. See{' '}
-              <a href="/privacy" className="text-cyan-400 hover:underline">
+              <a href="/privacy" className="text-cyan-600 dark:text-cyan-400 hover:underline">
                 Privacy Policy
               </a>
               .

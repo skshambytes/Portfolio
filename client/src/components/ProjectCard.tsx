@@ -58,7 +58,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         rotateY,
         transformStyle: 'preserve-3d',
       }}
-      className="relative group rounded-2xl border border-white/10 bg-slate-900/60 p-5 flex flex-col justify-between transition-all duration-300 hover:border-cyan-500/40 hover:shadow-[0_15px_35px_rgba(0,242,254,0.15)] [perspective:1000px] overflow-hidden"
+      className="relative group rounded-2xl border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/60 p-5 flex flex-col justify-between transition-all duration-300 hover:border-cyan-500/40 hover:shadow-[0_15px_35px_rgba(0,242,254,0.12)] shadow-sm dark:shadow-none [perspective:1000px] overflow-hidden"
     >
       {/* Dynamic light reflection glare */}
       <div
@@ -73,11 +73,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {project.isFeatured ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30">
                 <Award className="h-3.5 w-3.5" /> Featured Analysis
               </span>
             ) : (
-              <span className="px-2.5 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-white/5">
+              <span className="px-2.5 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/5">
                 {project.language}
               </span>
             )}
@@ -85,12 +85,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
           <div className="flex items-center gap-3">
             {project.stars > 0 && (
-              <span className="flex items-center gap-1 text-xs text-amber-400 font-mono">
+              <span className="flex items-center gap-1 text-xs text-amber-500 dark:text-amber-400 font-mono">
                 <Star className="h-3.5 w-3.5 fill-amber-400" /> {project.stars}
               </span>
             )}
             {project.forks > 0 && (
-              <span className="flex items-center gap-1 text-xs text-slate-400 font-mono">
+              <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 font-mono">
                 <GitFork className="h-3.5 w-3.5" /> {project.forks}
               </span>
             )}
@@ -99,7 +99,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`View ${project.displayName} GitHub repository`}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <Github className="h-4 w-4" />
             </a>
@@ -109,7 +109,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`View live demo of ${project.displayName}`}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <ExternalLink className="h-4 w-4" />
               </a>
@@ -118,7 +118,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </div>
 
         {/* Project Title */}
-        <h3 className="text-xl font-bold text-slate-100 group-hover:text-cyan-300 transition-colors line-clamp-1">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-1">
           {project.displayName}
         </h3>
 
@@ -127,7 +127,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           {project.techStack.map((tech) => (
             <span
               key={tech}
-              className="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-800/80 text-cyan-300/90 border border-white/5"
+              className="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800/80 text-cyan-800 dark:text-cyan-300/90 border border-slate-200 dark:border-white/5"
             >
               {tech}
             </span>
@@ -136,7 +136,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
         {/* Curated Highlights or Plain Text Description */}
         {project.curatedHighlights && project.curatedHighlights.length > 0 ? (
-          <ul className="space-y-2 my-3 text-xs sm:text-sm text-slate-300 leading-relaxed list-disc list-inside">
+          <ul className="space-y-2 my-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed list-disc list-inside">
             {project.curatedHighlights.map((hl, i) => (
               <li key={i} className="line-clamp-2">
                 {hl}
@@ -144,7 +144,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             ))}
           </ul>
         ) : (
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed my-3 line-clamp-3">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed my-3 line-clamp-3">
             {project.description}
           </p>
         )}
@@ -155,10 +155,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             {project.stats.map((s) => (
               <div
                 key={s.label}
-                className="p-2 rounded-lg bg-slate-950/70 border border-white/5 text-center"
+                className="p-2 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/80 dark:border-white/5 text-center"
               >
-                <div className="text-xs font-mono font-bold text-cyan-400">{s.value}</div>
-                <div className="text-[10px] text-slate-400 truncate">{s.label}</div>
+                <div className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400">{s.value}</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{s.label}</div>
               </div>
             ))}
           </div>
@@ -166,16 +166,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       </div>
 
       {/* Footer Info: Topics and Date */}
-      <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+      <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-1.5 font-mono">
-          <Calendar className="h-3.5 w-3.5 text-slate-500" />
+          <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
           <span>{formattedDate}</span>
         </div>
         <a
           href={project.repoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1 group/link"
+          className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 font-medium inline-flex items-center gap-1 group/link"
         >
           Explore Repo <span className="transition-transform group-hover/link:translate-x-0.5">→</span>
         </a>

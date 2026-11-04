@@ -49,23 +49,23 @@ export const CountUpStat: React.FC<CountUpStatProps> = ({
   return (
     <div
       ref={ref}
-      className="glass-card relative flex flex-col items-center justify-center p-6 rounded-2xl border border-white/5 bg-slate-900/40 text-center overflow-hidden"
+      className="glass-card relative flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-200/80 dark:border-white/5 bg-white/70 dark:bg-slate-900/40 text-center overflow-hidden shadow-sm dark:shadow-none"
     >
       {/* Background glow accent */}
       <div className="absolute -top-12 -right-12 h-24 w-24 rounded-full bg-cyan-500/10 blur-2xl pointer-events-none" />
 
-      <div className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500 font-mono tracking-tight">
+      <div className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-600 dark:from-cyan-400 dark:via-sky-300 dark:to-blue-500 font-mono tracking-tight">
         {prefix}
         {count.toLocaleString()}
         {suffix}
       </div>
 
-      <div className="mt-2 text-sm sm:text-base font-semibold text-slate-200 tracking-wide">
+      <div className="mt-2 text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 tracking-wide">
         {label}
       </div>
 
       {description && (
-        <div className="mt-1 text-xs text-slate-400 leading-relaxed max-w-[200px]">
+        <div className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-[200px]">
           {description}
         </div>
       )}
