@@ -51,10 +51,10 @@ function ParticleField({ count = 600 }: { count?: number }) {
         <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.06}
+        size={0.05}
         vertexColors
         transparent
-        opacity={0.65}
+        opacity={0.35}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -62,16 +62,16 @@ function ParticleField({ count = 600 }: { count?: number }) {
   );
 }
 
-// 2. 3D Floating Data Chart Bars
+// 2. 3D Floating Data Chart Bars - Positioned safely in bottom-right background periphery
 function DataBars() {
   const groupRef = useRef<THREE.Group>(null!);
-  const barCount = 7;
+  const barCount = 6;
   const bars = useMemo(() => {
     return Array.from({ length: barCount }, (_, i) => ({
-      x: (i - barCount / 2) * 0.8,
-      initialHeight: 1 + Math.sin(i * 0.8) * 0.8,
-      speed: 1.2 + i * 0.2,
-      phase: i * 0.5,
+      x: (i - barCount / 2) * 0.55,
+      initialHeight: 0.8 + Math.sin(i * 0.8) * 0.6,
+      speed: 1.0 + i * 0.15,
+      phase: i * 0.6,
     }));
   }, []);
 
@@ -81,25 +81,28 @@ function DataBars() {
     groupRef.current.children.forEach((mesh, index) => {
       const bar = bars[index];
       if (bar) {
-        const scaleY = Math.max(0.2, bar.initialHeight + Math.sin(t * bar.speed + bar.phase) * 0.6);
+        const scaleY = Math.max(0.2, bar.initialHeight + Math.sin(t * bar.speed + bar.phase) * 0.4);
         mesh.scale.set(1, scaleY, 1);
-        mesh.position.y = -2 + scaleY * 0.5;
+        mesh.position.y = -1.2 + scaleY * 0.4;
       }
     });
   });
 
   return (
-    <group ref={groupRef} position={[2.5, 0, -2]}>
+    // Relocated to far right-bottom periphery [4.6, -2.4, -3] to keep text 100% unobstructed
+    <group ref={groupRef} position={[4.6, -2.2, -3]}>
       {bars.map((bar, i) => (
-        <mesh key={i} position={[bar.x, -1, 0]}>
-          <boxGeometry args={[0.4, 1, 0.4]} />
+        <mesh key={i} position={[bar.x, -0.6, 0]}>
+          <boxGeometry args={[0.3, 0.8, 0.3]} />
           <meshStandardMaterial
             color="#0ea5e9"
             emissive="#00f2fe"
-            emissiveIntensity={0.25}
-            roughness={0.2}
+            emissiveIntensity={0.2}
+            roughness={0.3}
             metalness={0.8}
             wireframe={i % 2 === 1}
+            transparent
+            opacity={0.55}
           />
         </mesh>
       ))}
@@ -107,44 +110,48 @@ function DataBars() {
   );
 }
 
-// 3. Central Holographic Data Cube / Core
+// 3. Ambient Holographic Data Cube - Positioned in the upper-right corner background
 function DataCube() {
   const meshRef = useRef<THREE.Mesh>(null!);
   const innerRef = useRef<THREE.Mesh>(null!);
 
   useFrame((_, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.25;
-      meshRef.current.rotation.y += delta * 0.35;
+      meshRef.current.rotation.x += delta * 0.2;
+      meshRef.current.rotation.y += delta * 0.25;
     }
     if (innerRef.current) {
-      innerRef.current.rotation.x -= delta * 0.4;
-      innerRef.current.rotation.y -= delta * 0.3;
+      innerRef.current.rotation.x -= delta * 0.3;
+      innerRef.current.rotation.y -= delta * 0.25;
     }
   });
 
   return (
-    <group position={[-2.8, 0.5, -1]}>
-      {/* Outer wireframe analytical cube */}
+    // Relocated to upper-right background periphery [4.2, 2.3, -3] to keep headline & bio 100% unobstructed
+    <group position={[4.2, 2.3, -3]}>
+      {/* Outer subtle wireframe analytical cube */}
       <mesh ref={meshRef}>
-        <boxGeometry args={[2, 2, 2]} />
+        <boxGeometry args={[1.3, 1.3, 1.3]} />
         <meshStandardMaterial
           color="#00f2fe"
+          wireframe
+          transparent
+          opacity={0.3}
+          emissive="#00f2fe"
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+      {/* Inner translucent rotating core */}
+      <mesh ref={innerRef}>
+        <octahedronGeometry args={[0.6]} />
+        <meshStandardMaterial
+          color="#0284c7"
           wireframe
           transparent
           opacity={0.4}
           emissive="#00f2fe"
           emissiveIntensity={0.3}
-        />
-      </mesh>
-      {/* Inner solid glowing decision core */}
-      <mesh ref={innerRef}>
-        <octahedronGeometry args={[0.9]} />
-        <meshStandardMaterial
-          color="#0284c7"
-          emissive="#00f2fe"
-          emissiveIntensity={0.6}
-          roughness={0.1}
+          roughness={0.2}
           metalness={0.9}
         />
       </mesh>
@@ -175,23 +182,26 @@ function SceneRig({
       return;
     }
 
-    // Combine pointer and gyroscope parallax
-    const targetX = (pointerPos.x * 0.25) + (gyroPos.gamma * 0.005);
-    const targetY = (-pointerPos.y * 0.25) + (gyroPos.beta * 0.005);
+    // Combine subtle pointer and gyroscope parallax with limited amplitude to prevent wide sway
+    const targetX = (pointerPos.x * 0.12) + (gyroPos.gamma * 0.003);
+    const targetY = (-pointerPos.y * 0.12) + (gyroPos.beta * 0.003);
 
     // Smooth lerp damping
     rigGroupRef.current.rotation.y = THREE.MathUtils.damp(rigGroupRef.current.rotation.y, targetX, 3.5, delta);
     rigGroupRef.current.rotation.x = THREE.MathUtils.damp(rigGroupRef.current.rotation.x, targetY, 3.5, delta);
   });
 
+  const isWideScreen = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
   return (
     <group ref={rigGroupRef}>
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1.2} color="#00f2fe" />
       <pointLight position={[-5, -5, -5]} intensity={0.8} color="#0ea5e9" />
-      <ParticleField count={window.innerWidth < 768 ? 250 : 600} />
-      <DataCube />
-      <DataBars />
+      <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 200 : 450} />
+      {/* 3D Data Cube and Bars are placed strictly on the far right periphery on wide viewports */}
+      {isWideScreen && <DataCube />}
+      {isWideScreen && <DataBars />}
     </group>
   );
 }
