@@ -12,15 +12,10 @@ export const CustomCursor: React.FC = () => {
       return;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent | MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
-    };
+      setIsVisible(true);
 
-    const handleMouseLeave = () => setIsVisible(false);
-    const handleMouseEnter = () => setIsVisible(true);
-
-    const handleElementHover = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (
         target &&
@@ -37,18 +32,22 @@ export const CustomCursor: React.FC = () => {
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mousemove', handleElementHover, { passive: true });
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
+
+    // Using capture: true guarantees events are received even if children stop propagation
+    window.addEventListener('pointermove', handlePointerMove, { capture: true, passive: true });
+    window.addEventListener('mousemove', handlePointerMove, { capture: true, passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousemove', handleElementHover);
+      window.removeEventListener('pointermove', handlePointerMove, { capture: true });
+      window.removeEventListener('mousemove', handlePointerMove, { capture: true });
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [isVisible]);
+  }, []);
 
   // Smooth lerp loop for the outer trailing glow ring
   useEffect(() => {
@@ -60,8 +59,8 @@ export const CustomCursor: React.FC = () => {
         const dx = position.x - prev.x;
         const dy = position.y - prev.y;
         return {
-          x: prev.x + dx * 0.18,
-          y: prev.y + dy * 0.18,
+          x: prev.x + dx * 0.22,
+          y: prev.y + dy * 0.22,
         };
       });
       animId = requestAnimationFrame(lerp);
@@ -74,10 +73,10 @@ export const CustomCursor: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <>
+    <div className="pointer-events-none select-none">
       {/* Inner precise dot */}
       <div
-        className="pointer-events-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400 transition-transform duration-75"
+        className="pointer-events-none select-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400 transition-transform duration-75"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -88,15 +87,15 @@ export const CustomCursor: React.FC = () => {
       />
       {/* Outer fluid trailing glow circle */}
       <div
-        className="pointer-events-none fixed z-[9998] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-400/40 bg-cyan-400/10 backdrop-blur-[1px] transition-all duration-150 ease-out"
+        className="pointer-events-none select-none fixed z-[9998] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-400/40 bg-cyan-400/10 backdrop-blur-[1px] transition-all duration-150 ease-out"
         style={{
           left: `${trailingPos.x}px`,
           top: `${trailingPos.y}px`,
-          width: isHovered ? '48px' : '32px',
-          height: isHovered ? '48px' : '32px',
-          boxShadow: isHovered ? '0 0 24px rgba(0, 242, 254, 0.45)' : '0 0 12px rgba(0, 242, 254, 0.2)',
+          width: isHovered ? '46px' : '30px',
+          height: isHovered ? '46px' : '30px',
+          boxShadow: isHovered ? '0 0 20px rgba(0, 242, 254, 0.4)' : '0 0 10px rgba(0, 242, 254, 0.15)',
         }}
       />
-    </>
+    </div>
   );
 };

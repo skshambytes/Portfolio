@@ -51,10 +51,10 @@ function ParticleField({ count = 600 }: { count?: number }) {
         <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.045}
         vertexColors
         transparent
-        opacity={0.35}
+        opacity={0.3}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -62,104 +62,7 @@ function ParticleField({ count = 600 }: { count?: number }) {
   );
 }
 
-// 2. 3D Floating Data Chart Bars - Positioned safely in bottom-right background periphery
-function DataBars() {
-  const groupRef = useRef<THREE.Group>(null!);
-  const barCount = 6;
-  const bars = useMemo(() => {
-    return Array.from({ length: barCount }, (_, i) => ({
-      x: (i - barCount / 2) * 0.55,
-      initialHeight: 0.8 + Math.sin(i * 0.8) * 0.6,
-      speed: 1.0 + i * 0.15,
-      phase: i * 0.6,
-    }));
-  }, []);
-
-  useFrame(({ clock }) => {
-    if (!groupRef.current) return;
-    const t = clock.getElapsedTime();
-    groupRef.current.children.forEach((mesh, index) => {
-      const bar = bars[index];
-      if (bar) {
-        const scaleY = Math.max(0.2, bar.initialHeight + Math.sin(t * bar.speed + bar.phase) * 0.4);
-        mesh.scale.set(1, scaleY, 1);
-        mesh.position.y = -1.2 + scaleY * 0.4;
-      }
-    });
-  });
-
-  return (
-    // Relocated to far right-bottom periphery [4.6, -2.4, -3] to keep text 100% unobstructed
-    <group ref={groupRef} position={[4.6, -2.2, -3]}>
-      {bars.map((bar, i) => (
-        <mesh key={i} position={[bar.x, -0.6, 0]}>
-          <boxGeometry args={[0.3, 0.8, 0.3]} />
-          <meshStandardMaterial
-            color="#0ea5e9"
-            emissive="#00f2fe"
-            emissiveIntensity={0.2}
-            roughness={0.3}
-            metalness={0.8}
-            wireframe={i % 2 === 1}
-            transparent
-            opacity={0.55}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-// 3. Ambient Holographic Data Cube - Positioned in the upper-right corner background
-function DataCube() {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  const innerRef = useRef<THREE.Mesh>(null!);
-
-  useFrame((_, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.2;
-      meshRef.current.rotation.y += delta * 0.25;
-    }
-    if (innerRef.current) {
-      innerRef.current.rotation.x -= delta * 0.3;
-      innerRef.current.rotation.y -= delta * 0.25;
-    }
-  });
-
-  return (
-    // Relocated to upper-right background periphery [4.2, 2.3, -3] to keep headline & bio 100% unobstructed
-    <group position={[4.2, 2.3, -3]}>
-      {/* Outer subtle wireframe analytical cube */}
-      <mesh ref={meshRef}>
-        <boxGeometry args={[1.3, 1.3, 1.3]} />
-        <meshStandardMaterial
-          color="#00f2fe"
-          wireframe
-          transparent
-          opacity={0.3}
-          emissive="#00f2fe"
-          emissiveIntensity={0.2}
-        />
-      </mesh>
-      {/* Inner translucent rotating core */}
-      <mesh ref={innerRef}>
-        <octahedronGeometry args={[0.6]} />
-        <meshStandardMaterial
-          color="#0284c7"
-          wireframe
-          transparent
-          opacity={0.4}
-          emissive="#00f2fe"
-          emissiveIntensity={0.3}
-          roughness={0.2}
-          metalness={0.9}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-// 4. Parallax Group Controller with Pointer & Device Orientation
+// Parallax Group Controller with Pointer & Device Orientation
 function SceneRig({
   pointerPos,
   gyroPos,
@@ -177,31 +80,27 @@ function SceneRig({
     if (prefersReducedMotion) {
       // Gentle auto-sway only
       const t = state.clock.getElapsedTime();
-      rigGroupRef.current.rotation.y = Math.sin(t * 0.2) * 0.05;
-      rigGroupRef.current.rotation.x = Math.cos(t * 0.2) * 0.03;
+      rigGroupRef.current.rotation.y = Math.sin(t * 0.15) * 0.04;
+      rigGroupRef.current.rotation.x = Math.cos(t * 0.15) * 0.02;
       return;
     }
 
-    // Combine subtle pointer and gyroscope parallax with limited amplitude to prevent wide sway
-    const targetX = (pointerPos.x * 0.12) + (gyroPos.gamma * 0.003);
-    const targetY = (-pointerPos.y * 0.12) + (gyroPos.beta * 0.003);
+    // Combine subtle pointer and gyroscope parallax
+    const targetX = (pointerPos.x * 0.1) + (gyroPos.gamma * 0.003);
+    const targetY = (-pointerPos.y * 0.1) + (gyroPos.beta * 0.003);
 
     // Smooth lerp damping
-    rigGroupRef.current.rotation.y = THREE.MathUtils.damp(rigGroupRef.current.rotation.y, targetX, 3.5, delta);
-    rigGroupRef.current.rotation.x = THREE.MathUtils.damp(rigGroupRef.current.rotation.x, targetY, 3.5, delta);
+    rigGroupRef.current.rotation.y = THREE.MathUtils.damp(rigGroupRef.current.rotation.y, targetX, 3.0, delta);
+    rigGroupRef.current.rotation.x = THREE.MathUtils.damp(rigGroupRef.current.rotation.x, targetY, 3.0, delta);
   });
-
-  const isWideScreen = typeof window !== 'undefined' && window.innerWidth >= 1024;
 
   return (
     <group ref={rigGroupRef}>
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1.2} color="#00f2fe" />
       <pointLight position={[-5, -5, -5]} intensity={0.8} color="#0ea5e9" />
+      {/* Clean, ambient data starfield without any obstructing 3D geometric shapes */}
       <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 200 : 450} />
-      {/* 3D Data Cube and Bars are placed strictly on the far right periphery on wide viewports */}
-      {isWideScreen && <DataCube />}
-      {isWideScreen && <DataBars />}
     </group>
   );
 }

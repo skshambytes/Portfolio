@@ -168,13 +168,14 @@ export const Home: React.FC = () => {
                 <span>DATA ANALYST & BUSINESS INTELLIGENCE</span>
               </div>
 
+              {/* Tagline before greetings */}
+              <div className="text-xl sm:text-2xl lg:text-3xl font-semibold text-cyan-300 tracking-wide">
+                Turning raw data into decisions.
+              </div>
+
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
                 Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-sky-400">Saksham Raj</span>
               </h1>
-
-              <p className="text-xl sm:text-2xl text-cyan-200/90 font-medium tracking-wide">
-                Turning raw data into decisions.
-              </p>
 
               <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 BCA student with hands-on project experience in SQL, Python, Power BI and Excel. Skilled in data cleaning, exploratory data analysis, dashboard development and KPI reporting, with projects covering customer churn, shopping behavior and sales performance.
