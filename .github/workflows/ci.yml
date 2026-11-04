@@ -1,0 +1,54 @@
+name: CI & Security Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Lint, Typecheck, Audit & Security Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install & Audit Server Dependencies
+        run: |
+          cd server
+          npm ci
+          npm audit --audit-level=high
+
+      - name: Typecheck & Build Server
+        run: |
+          cd server
+          npm run typecheck
+          npm run build
+
+      - name: Run Backend Security Test Suite
+        run: |
+          cd server
+          npm run test:security
+        env:
+          NODE_ENV: test
+          IP_HASH_SALT: test-salt-32-chars-long-minimum-salt-ci
+
+      - name: Install & Audit Client Dependencies
+        run: |
+          cd client
+          npm ci
+          npm audit --audit-level=high
+
+      - name: Typecheck & Build Client
+        run: |
+          cd client
+          npm run typecheck
+          npm run build

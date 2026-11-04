@@ -1,0 +1,31 @@
+{
+  "name": "saksham-raj-portfolio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-ready 3D animated portfolio website for Saksham Raj (Data Analyst | BI)",
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build:server": "npm --prefix server run build",
+    "build:client": "npm --prefix client run build",
+    "build": "npm run build:server && npm run build:client",
+    "typecheck:server": "npm --prefix server run typecheck",
+    "typecheck:client": "npm --prefix client run typecheck",
+    "typecheck": "npm run typecheck:server && npm run typecheck:client",
+    "test:security": "npm --prefix server run test:security",
+    "audit:server": "npm --prefix server audit",
+    "audit:client": "npm --prefix client audit"
+  },
+  "keywords": [
+    "portfolio",
+    "data-analyst",
+    "business-intelligence",
+    "power-bi",
+    "threejs",
+    "react",
+    "express",
+    "mongodb"
+  ],
+  "author": "Saksham Raj",
+  "license": "MIT"
+}
