@@ -5,6 +5,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import compression from 'compression';
 import morgan from 'morgan';
+import { resolve } from 'node:path';
 import { ENV } from './config/env.js';
 import { connectDB, isDatabaseConnected } from './db/connection.js';
 import { globalLimiter } from './middleware/rateLimiter.js';
@@ -135,6 +136,17 @@ async function startServer() {
     console.log(`[Server] Portfolio backend running on port ${ENV.PORT} [${ENV.NODE_ENV}]`);
   });
 
+  server.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(
+        `[Server Error] Port ${ENV.PORT} is already in use. If the portfolio backend is already running, keep using it and start only the client. Otherwise stop the process using this port or set PORT to an available port in server/.env.`
+      );
+    } else {
+      console.error('[Server Error] Failed to start the HTTP server:', err);
+    }
+    process.exit(1);
+  });
+
   const shutdown = async (signal: string) => {
     console.log(`\n[Server] Received ${signal}. Shutting down gracefully...`);
     server.close(() => {
@@ -147,9 +159,11 @@ async function startServer() {
   process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
-startServer().catch((err) => {
-  console.error('[Server Fatal] Failed to bootstrap server:', err);
-  process.exit(1);
-});
+if (process.argv[1] && resolve(process.argv[1]) === resolve(__filename)) {
+  startServer().catch((err) => {
+    console.error('[Server Fatal] Failed to bootstrap server:', err);
+    process.exit(1);
+  });
+}
 
 export default app;

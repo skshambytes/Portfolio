@@ -72,14 +72,14 @@ export const SkillCloud3D: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
-              className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col justify-between"
+              className="glass-card p-6 rounded-2xl border border-slate-200 dark:border-white/5 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="font-semibold text-lg text-slate-100">{cat.title}</h3>
+                  <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">{cat.title}</h3>
                 </div>
 
                 {/* Skills with Progress Bars */}

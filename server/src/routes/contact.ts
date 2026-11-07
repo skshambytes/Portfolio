@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { Contact } from '../models/Contact.js';
+import { isDatabaseConnected } from '../db/connection.js';
 import { contactFormLimiter } from '../middleware/rateLimiter.js';
 import {
   hashIp,
@@ -165,26 +166,36 @@ router.post('/', contactFormLimiter, async (req: Request, res: Response, next: N
     }
 
     // 11. Save message to MongoDB
-    try {
-      await Contact.create({
-        name: cleanName,
-        email: cleanEmail,
-        subject: cleanSubject,
-        message: cleanMessage,
-        ipHash: anonymizedIpHash,
-      });
-    } catch (dbErr) {
-      console.warn('[Contact Save Warning] Database store error:', dbErr instanceof Error ? dbErr.message : String(dbErr));
-      // Continue to try email notification even if DB is in degraded mode
+    if (isDatabaseConnected()) {
+      try {
+        await Contact.create({
+          name: cleanName,
+          email: cleanEmail,
+          subject: cleanSubject,
+          message: cleanMessage,
+          ipHash: anonymizedIpHash,
+        });
+      } catch (dbErr) {
+        console.warn('[Contact Save Warning] Database store error:', dbErr instanceof Error ? dbErr.message : String(dbErr));
+      }
+    } else {
+      console.warn('[Contact Save Warning] Database unavailable; continuing with email delivery.');
     }
 
     // 12. Send Email notifications (to Saksham and auto-reply to sender)
-    await sendContactEmails({
+    const emailResult = await sendContactEmails({
       name: cleanName,
       email: cleanEmail,
       subject: cleanSubject,
       message: cleanMessage,
     });
+
+    if (!emailResult.delivered) {
+      return res.status(503).json({
+        success: false,
+        error: `Email delivery is temporarily unavailable. Please contact ${ENV.CONTACT_TO_EMAIL} directly.`,
+      });
+    }
 
     return res.status(200).json({
       success: true,

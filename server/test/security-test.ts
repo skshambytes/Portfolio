@@ -1,5 +1,4 @@
 import http from 'http';
-import app from '../src/index.js';
 
 interface TestResult {
   name: string;
@@ -33,6 +32,12 @@ async function runSecurityTests() {
   console.log('\n=============================================');
   console.log('  RUNNING SAKSHAM RAJ PORTFOLIO SECURITY SUITE');
   console.log('=============================================\n');
+
+  process.env.SMTP_HOST = '';
+  process.env.SMTP_USER = '';
+  process.env.SMTP_PASS = '';
+  process.env.TURNSTILE_SECRET_KEY = '1x0000000000000000000000000000000AA';
+  const { default: app } = await import('../src/index.js');
 
   // Start test server on dynamic port on 127.0.0.1
   const server = http.createServer(app);
@@ -215,7 +220,7 @@ async function runSecurityTests() {
     results.push({ name: '7. IP Rate Limiting triggers', passed: false, status: 0, expectedStatus: 429, details: String(err) });
   }
 
-  // Test 8: Legitimate Submission Accepted & Processed
+  // Test 8: Valid submission is not reported as sent without SMTP configuration
   try {
     const validBody = JSON.stringify({
       name: 'Hiring Manager',
@@ -226,16 +231,17 @@ async function runSecurityTests() {
       renderedAt: Date.now() - 6000,
     });
     const res = await makeRequest(getOptions('198.51.100.8'), validBody);
-    const pass = res.status === 200;
+    const response = JSON.parse(res.data);
+    const pass = res.status === 503 && response.success === false;
     results.push({
-      name: '8. Legitimate submission accepted & processed',
+      name: '8. Valid submission rejected when email is unconfigured',
       passed: pass,
       status: res.status,
-      expectedStatus: 200,
+      expectedStatus: 503,
       details: res.data,
     });
   } catch (err) {
-    results.push({ name: '8. Legitimate submission accepted & processed', passed: false, status: 0, expectedStatus: 200, details: String(err) });
+    results.push({ name: '8. Valid submission rejected when email is unconfigured', passed: false, status: 0, expectedStatus: 503, details: String(err) });
   }
 
   // Test 9: Health Check Endpoint

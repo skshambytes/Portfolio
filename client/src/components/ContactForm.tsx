@@ -21,36 +21,57 @@ type FormData = z.infer<typeof formSchema>;
 export const ContactForm: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [renderedAt, setRenderedAt] = useState<number>(0);
+  const [emailFallback, setEmailFallback] = useState('');
+  const [renderedAt] = useState<number>(() => Date.now());
   const [turnstileToken, setTurnstileToken] = useState<string>('');
+  const [turnstileError, setTurnstileError] = useState('');
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
-
-  // Set renderedAt timestamp to detect sub-second bot submissions
-  useEffect(() => {
-    setRenderedAt(Date.now());
-  }, []);
+  const contactEmail = 'rajsaksham744@gmail.com';
+  const contactPhone = '+91 9625631438';
 
   // Initialize Cloudflare Turnstile widget if site key exists
   useEffect(() => {
     const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-    if (!siteKey || !window.turnstile || !turnstileContainerRef.current) return;
+    if (!siteKey || !turnstileContainerRef.current) return;
 
-    try {
-      const widgetId = window.turnstile.render(turnstileContainerRef.current, {
-        sitekey: siteKey,
-        callback: (token: string) => setTurnstileToken(token),
-        'expired-callback': () => setTurnstileToken(''),
-        theme: 'dark',
-      });
+    let widgetId: string | undefined;
+    const renderWidget = () => {
+      if (!window.turnstile || !turnstileContainerRef.current || widgetId) return;
 
-      return () => {
-        if (window.turnstile && widgetId) {
-          window.turnstile.remove(widgetId);
-        }
-      };
-    } catch {
-      // Graceful fallback if Turnstile script is blocked by browser adblock
+      try {
+        widgetId = window.turnstile.render(turnstileContainerRef.current, {
+          sitekey: siteKey,
+          callback: (token: string) => setTurnstileToken(token),
+          'expired-callback': () => setTurnstileToken(''),
+          theme: 'dark',
+        });
+      } catch (err) {
+        console.error('[ContactForm] Turnstile initialization failed:', err);
+        setTurnstileError('Security verification could not be loaded. Please contact me directly by email.');
+      }
+    };
+
+    const script = document.querySelector<HTMLScriptElement>(
+      'script[src*="challenges.cloudflare.com/turnstile/v0/api.js"]'
+    );
+    const handleScriptError = () => {
+      setTurnstileError('Security verification could not be loaded. Please contact me directly by email.');
+    };
+
+    if (window.turnstile) {
+      renderWidget();
+    } else if (script) {
+      script.addEventListener('load', renderWidget);
+      script.addEventListener('error', handleScriptError);
+    } else {
+      setTurnstileError('Security verification is unavailable. Please contact me directly by email.');
     }
+
+    return () => {
+      script?.removeEventListener('load', renderWidget);
+      script?.removeEventListener('error', handleScriptError);
+      if (window.turnstile && widgetId) window.turnstile.remove(widgetId);
+    };
   }, []);
 
   const {
@@ -73,6 +94,7 @@ export const ContactForm: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     setStatus('loading');
     setErrorMessage('');
+    setEmailFallback('');
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '';
@@ -93,6 +115,13 @@ export const ContactForm: React.FC = () => {
       const responseData = await res.json();
 
       if (!res.ok) {
+        if (res.status === 503) {
+          setEmailFallback(
+            `mailto:${contactEmail}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
+              `Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`
+            )}`
+          );
+        }
         throw new Error(responseData.error || 'Failed to send message. Please try again.');
       }
 
@@ -112,13 +141,16 @@ export const ContactForm: React.FC = () => {
       }
     } catch (err) {
       setStatus('error');
+      if (err instanceof TypeError) {
+        setEmailFallback(
+          `mailto:${contactEmail}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
+            `Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`
+          )}`
+        );
+      }
       setErrorMessage(err instanceof Error ? err.message : 'An unexpected error occurred. Please reach out directly via email.');
     }
   };
-
-  // Client-side obfuscated contact info to prevent scraping
-  const contactEmail = 'rajsaksham744@gmail.com';
-  const contactPhone = '+91 9625631438';
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -303,6 +335,14 @@ export const ContactForm: React.FC = () => {
 
           {/* Turnstile Container */}
           <div ref={turnstileContainerRef} className="my-2" />
+          {turnstileError && (
+            <p className="text-xs text-rose-400">
+              {turnstileError}{' '}
+              <a href={`mailto:${contactEmail}`} className="underline hover:text-rose-300">
+                {contactEmail}
+              </a>
+            </p>
+          )}
 
           {/* Submit Button */}
           <button
@@ -327,14 +367,21 @@ export const ContactForm: React.FC = () => {
           {status === 'success' && (
             <div className="flex items-center gap-2.5 p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-sm animate-fade-in">
               <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
-              <span>Thank you! Your message has been sent successfully. An auto-confirmation has been dispatched to your email.</span>
+              <span>Thank you! Your message has been delivered. I will get back to you soon.</span>
             </div>
           )}
 
           {status === 'error' && (
             <div className="flex items-center gap-2.5 p-4 rounded-xl bg-rose-950/60 border border-rose-500/30 text-rose-300 text-sm animate-fade-in">
               <AlertCircle className="h-5 w-5 text-rose-400 shrink-0" />
-              <span>{errorMessage}</span>
+              <span>
+                {errorMessage}{' '}
+                {emailFallback && (
+                  <a href={emailFallback} className="font-semibold underline underline-offset-2 hover:text-rose-200">
+                    Open your email app to send this message
+                  </a>
+                )}
+              </span>
             </div>
           )}
         </form>

@@ -27,23 +27,20 @@ function canSendAutoReply(email: string): boolean {
 }
 
 function getTransporter(): Transporter {
+  if (!ENV.SMTP_HOST || !ENV.SMTP_USER || !ENV.SMTP_PASS) {
+    throw new Error('SMTP is not configured');
+  }
+
   if (!transporter) {
-    if (ENV.SMTP_HOST && ENV.SMTP_USER && ENV.SMTP_PASS) {
-      transporter = nodemailer.createTransport({
-        host: ENV.SMTP_HOST,
-        port: ENV.SMTP_PORT,
-        secure: ENV.SMTP_PORT === 465,
-        auth: {
-          user: ENV.SMTP_USER,
-          pass: ENV.SMTP_PASS,
-        },
-      });
-    } else {
-      // In dev or test mode when SMTP is not configured, create a stream or test transporter
-      transporter = nodemailer.createTransport({
-        jsonTransport: true,
-      });
-    }
+    transporter = nodemailer.createTransport({
+      host: ENV.SMTP_HOST,
+      port: ENV.SMTP_PORT,
+      secure: ENV.SMTP_PORT === 465,
+      auth: {
+        user: ENV.SMTP_USER,
+        pass: ENV.SMTP_PASS,
+      },
+    });
   }
   return transporter;
 }
@@ -56,8 +53,6 @@ export interface ContactEmailPayload {
 }
 
 export async function sendContactEmails(payload: ContactEmailPayload): Promise<{ delivered: boolean }> {
-  const mailer = getTransporter();
-
   const safeName = escapeHtml(payload.name);
   const safeEmail = escapeHtml(payload.email);
   const safeSubject = escapeHtml(payload.subject);
@@ -83,13 +78,15 @@ export async function sendContactEmails(payload: ContactEmailPayload): Promise<{
     `,
   };
 
+  let mailer: Transporter;
   try {
+    mailer = getTransporter();
     await mailer.sendMail(ownerMailOptions);
-    console.log('[Email] Owner notification processed successfully.');
+    console.log('[Email] Owner notification accepted by SMTP.');
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : 'Unknown mail error';
-    console.error(`[Email Warning] Failed to send owner email: ${errorMsg}`);
-    // We do not fail the request if saving to DB succeeded
+    console.error(`[Email Error] Failed to deliver owner notification: ${errorMsg}`);
+    return { delivered: false };
   }
 
   // 2. Auto-reply confirmation to the sender (capped per day)

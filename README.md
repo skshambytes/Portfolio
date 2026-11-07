@@ -127,6 +127,7 @@ A production-ready, security-hardened, 3D animated portfolio web application bui
    - `IP_HASH_SALT`: `<Generate a random 32+ character string>`
    - `GITHUB_TOKEN`: `<Optional GitHub personal access token>`
 5. Click **Create Web Service**. Your backend URL will be: `https://saksham-portfolio-api.onrender.com`.
+   The contact form will report a delivery error until valid SMTP host, username, and password values are configured; set `CONTACT_TO_EMAIL` to the inbox that should receive messages.
 
 ### Step 5: Frontend Deployment (Vercel or Netlify)
 #### Option A: Vercel
@@ -137,7 +138,7 @@ A production-ready, security-hardened, 3D animated portfolio web application bui
    - Build Command: `npm run build`
    - Output Directory: `dist`
 3. Add Environment Variables:
-   - `VITE_API_URL`: `https://saksham-portfolio-api.onrender.com`
+   - `VITE_API_URL`: `https://saksham-portfolio-api.onrender.com` (required; use your deployed backend URL)
    - `VITE_TURNSTILE_SITE_KEY`: `<Your Cloudflare Public Site Key>`
 4. Click **Deploy**. Vercel will build and provide your live HTTPS URL.
 5. In your Render backend settings, ensure `CLIENT_ORIGIN` matches your new Vercel domain!
