@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.10.0",
+    "@hookform/resolvers": "^7.0.2",
     "@react-three/drei": "^9.121.4",
     "@react-three/fiber": "^8.17.14",
     "canvas-confetti": "^1.9.4",
